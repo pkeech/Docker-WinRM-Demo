@@ -1,0 +1,19 @@
+## DOCKER COMPOSE VERSION
+version: "3.7"
+
+## DEFINE SERVICES
+services:
+
+  ## DEMO
+  demo:
+    build:
+      context: ./App
+      target: Development
+    image: pkeech/winrm-demo:dev
+    container_name: WINRM_DEMO
+    volumes:
+      - ./App:/app
+    environment: 
+      UTIL_SVR: "192.168.2.80"
+      SVC_ACT: "administrator@dodbrit.com"
+      SVC_PWD: "1qaz2wsx!QAZ@WSX"

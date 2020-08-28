@@ -1,0 +1,16 @@
+## DOCKER COMPOSE VERSION
+version: "3.7"
+
+## DEFINE SERVICES
+services:
+
+  ## DEMO
+  demo:
+    build:
+      context: ./App
+      target: Production
+    image: pkeech/winrm-demo:latest
+    ports:
+      - 8080:8080
+      - 5986:5986
+      - 5985:5985

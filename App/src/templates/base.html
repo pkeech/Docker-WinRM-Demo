@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+    <head>
+        {% block head %}
+            <!-- CLARITY DESIGN -->
+            <link rel="stylesheet" href="{{ url_for('static', filename='styles/clarity/clr-ui.min.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='styles/clarity/clr-icons.min.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+            <script src="{{ url_for('static', filename='scripts/clarity/custom-elements.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='scripts/clarity/clr-icons.min.js') }}"></script>
+            
+            <!-- FAVICON-->
+            <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+            
+            <!-- PAGE TITLE-->
+            <title>WinRM Demo</title>
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class="main-container">
+            <!-- NAV BAR-->
+            <header class="header header-1">
+
+                <!-- TITLE -->
+                <div class="branding">
+                    <a href="#" class="nav-link">
+                        <img src="{{ url_for('static', filename='images/ServerIcon.png') }}" width="32px" height="32px" style="margin-right: 10px;" />
+                        <span class="title">WinRM Demo</span>
+                    </a>
+                </div>
+
+            </header>
+
+            <!-- HEADER -->
+            {% if self.header() %}
+            <div id='dplHeader' style="background-color: #FFF; width: 100%; padding: 0; margin: 0; border-bottom: 1px solid #CFCFCF;">
+                <div id='dplContent' style="padding-left: 50px; padding-top: 20px;">
+                    {% block header %}{% endblock %}
+                </div>
+            </div>
+            {% endif %}
+                    
+            <!-- MAIN CONTENT -->
+            <div class="content-container">
+                <div class="content-area">
+                    <div class="clr-row">
+                        <div class="clr-col">
+                            <span></span>
+                        </div>
+                        <div class="clr-col-10">
+                            <!-- PAGE TITLE -->
+                            <h1>{% block content_title %}{% endblock %}</h1>
+
+                            <!-- CONTENT -->
+                            {% block content %}{% endblock %}
+                        </div>
+                        <div class="clr-col">
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- SCRIPT BLOCK -->
+        {% block scripts %}
+        {% endblock %}
+
+    </body>
+</html>
