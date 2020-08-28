@@ -94,13 +94,13 @@ jobs:
       #    tags: ${{ steps.new_version.outputs.next-version }}
       
       ## STEP 6: Perform Code Coverage
-      - name: Codecov
+      - name: CodeCov
         # You may pin to the exact commit or the version.
         # uses: codecov/codecov-action@6004246f47ab62d32be025ce173b241cd84ac58e
         uses: codecov/codecov-action@v1.0.13
         with:
           # Repository upload token - get it from codecov.io. Required only for private repositories
-          token: ${{ CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
           
       
       ## STEP 7: Test Docker Image
