@@ -33,7 +33,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       
       ## STEP 2: Test Image Depenedencies (Trivy)
-      #- name: Trivy
+      - name: Trivy
         
              
       ## STEP 3: SLACK Notification

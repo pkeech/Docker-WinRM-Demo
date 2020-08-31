@@ -2,25 +2,34 @@
 from flask import Flask, request, jsonify
 import os, logging
 
-## DEFINE LOGGING STANDARDS
-logging.basicConfig(level=logging.DEBUG,
-    format='[%(asctime)s]: {} %(levelname)s %(message)s'.format(os.getpid()),
-    datefmt='%Y-%m-%d %H:%M:%S',
-    handlers=[logging.StreamHandler()])
+## IMPORT BLUEPRINTS
+from src.blueprints.page import page
 
-logger = logging.getLogger()
+## DEFINE FLASK APPLICATION
+def create_app(settings_override=None):
 
-## INITIALIZE FLASK AND EXTENSIONS
-app = Flask(__name__)
+    ## DEFINE LOGGING STANDARDS
+    logging.basicConfig(level=logging.DEBUG,
+        format='[%(asctime)s]: {} %(levelname)s %(message)s'.format(os.getpid()),
+        datefmt='%Y-%m-%d %H:%M:%S',
+        handlers=[logging.StreamHandler()])
 
-## LOG APPLICATION START UP
-logger.info('Starting Application ...')
+    logger = logging.getLogger()
 
-## Load Flask App Configurations
-#app.config.from_object('src.config')
+    ## INITIALIZE FLASK AND EXTENSIONS
+    app = Flask(__name__)
 
-## Import Views (After App Initialzed)
-from src import views
+    ## LOG APPLICATION START UP
+    logger.info('Starting Application ...')
 
-## LOG APPLICATION START UP
-logger.info('Application Started')
+    ## Load Flask App Configurations
+    #app.config.from_object('src.config')
+
+    ## Import Views (After App Initialzed)
+    app.register_blueprint(page)
+
+    ## LOG APPLICATION START UP
+    logger.info('Application Started')
+
+    ## RETURN APPLICATION
+    return app
