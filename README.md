@@ -5,4 +5,6 @@
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/pkeech/Docker-WinRM-Demo?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/pkeech/Docker-WinRM-Demo)
 
-The purpose of this App is to demo a WinRM conection between a Docker Container (Linux) to a Windows Server.
+## Description
+
+The App is to demonstrate how to create a WinRM conection between a Docker Container (Linux) to a Windows Server.
