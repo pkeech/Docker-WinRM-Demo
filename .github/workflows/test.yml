@@ -1,5 +1,5 @@
 ## Define GitHub Action Workflow Name
-name: Deployment
+name: Testing
 
 ## When Pull Request to Master is Created
 on:
