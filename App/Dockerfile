@@ -24,5 +24,6 @@ CMD ["flask", "run", "--host=0.0.0.0"]
 ## PRODUCTION IMAGE
 FROM Dependencies AS Production
 ENV FLASK_ENV=production
+ENV FLASK_RUN_PORT=8080 
 EXPOSE 8080
-CMD ["uwsgi", "app.ini"] 
+CMD ["uwsgi", "app.ini"]
