@@ -2,22 +2,22 @@
 import winrm, json, urllib3
 
 ## IMPORT REQUIRED FLASK MODULES
-from flask import request, jsonify, make_response, current_app, render_template
+from flask import Blueprint, request, jsonify, make_response, current_app, render_template
 
-## IMPORT REQUIRED CUSTOM MODULES
-from src import app
+## DEFINE BLUEPRINTS
+page = Blueprint('page', __name__, template_folder='templates')
 
 ## DISABLE URLLIB WARNINGS
 urllib3.disable_warnings()
 
 ## HOME ROUTE
-@app.route("/")
+@page.route("/")
 def index():
     ## RETURN HELLO WORLD
     return render_template('index.html')
 
 ## EXECUTE POWERSHELL ROUTE
-@app.route("/api/v1/powershell", methods=['POST'])
+@page.route("/api/v1/powershell", methods=['POST'])
 def powershell():
     ## READ JSON DATA
     req_data = request.get_json()
