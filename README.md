@@ -7,4 +7,4 @@
 
 ## Description
 
-The App is to demonstrate how to create a WinRM conection between a Docker Container (Linux) to a Windows Server.
+The App is to demonstrates how to create a WinRM conection between a Docker Container (Linux) to a Windows Server.
