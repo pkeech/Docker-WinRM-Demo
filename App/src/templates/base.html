@@ -21,16 +21,30 @@
         <div class="main-container">
             <!-- NAV BAR-->
             <header class="header header-1">
-
                 <!-- TITLE -->
                 <div class="branding">
-                    <a href="#" class="nav-link">
-                        <img src="{{ url_for('static', filename='images/ServerIcon.png') }}" width="32px" height="32px" style="margin-right: 10px;" />
+                    <a href="{{ url_for('page.index') }}" class="nav-link">                        
+                        <clr-icon shape="computer" class="is-solid" width="32px" height="32px" style="color: hsl(198, 0%, 100%);"></clr-icon>
                         <span class="title">WinRM Demo</span>
                     </a>
                 </div>
-
             </header>
+
+            <!-- SUBNAV -->
+            <nav class="subnav">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <!-- <a class="nav-link active" href="{{ url_for('page.index') }}">Home</a> -->
+                        <a class="nav-link" href="{{ url_for('page.index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('page.download') }}">Sample JSON</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('page.pageFile') }}">Uploads/Downloads</a>
+                    </li>                    
+                </ul>
+            </nav>
 
             <!-- HEADER -->
             {% if self.header() %}

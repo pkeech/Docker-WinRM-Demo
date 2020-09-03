@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block content_title %}WinRM Demo{% endblock %}
+
+<!-- REFERENCE: https://github.com/vmware/clarity/blob/master/packages/angular/projects/dev/src/app/forms/controls -->
+
+{% block content %}
+
+<style>
+    hr {
+        border: 1px solid hsl(198, 0%, 91%);
+    }
+</style>
+
+<h5 style="margin-top: 0px; margin-bottom: 30px;">Subheading, Subheading, Subheading ...</h5>
+
+<div style="margin-bottom: 30px;">
+    <ul class="clr-timeline" style="width: 80%; margin-left: auto; margin-right: auto;">
+        <li class="clr-timeline-step disabled">
+            <clr-icon shape="success-standard" class="is-solid" aria-label="Completed"></clr-icon>
+            <div class="clr-timeline-step-body">
+                <span class="clr-timeline-step-title">Add KMS</span>
+            </div>
+        </li>
+        <li class="clr-timeline-step">
+            <clr-icon shape="success-standard" class="is-solid" aria-label="Completed"></clr-icon>
+            
+            <div class="clr-timeline-step-body">
+                <span class="clr-timeline-step-title">Add KMS</span>
+            </div>
+        </li>
+        <li class="clr-timeline-step">
+            <clr-icon shape="dot-circle" aria-current="true" aria-label="Current"></clr-icon>
+            <div class="clr-timeline-step-body">
+                <span class="clr-timeline-step-title">Make vCenter trust KMS</span>
+            </div>
+        </li>
+        <li class="clr-timeline-step">
+            <clr-icon shape="circle" aria-label="Not started"></clr-icon>
+            <div class="clr-timeline-step-body">
+                <span class="clr-timeline-step-title">Make KMS trust vCenter</span>
+            </div>
+        </li>
+        <li class="clr-timeline-step">
+            <!--clr-icon shape="error-standard" aria-label="Error"></clr-icon>-->
+            <clr-icon shape="circle" aria-label="Not started"></clr-icon>
+            <div class="clr-timeline-step-body">
+                <span class="clr-timeline-step-title">Connected</span>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<hr />
+
+<div class="clr-row">
+    <div class="clr-col-9">
+        <h4>Loading Button Example</h4>
+        <p style="margin-top: 0.5rem;">Heading Description Sentence ... </p>
+    </div>
+    <div class="clr-col-3">
+        <h4 style="margin-top: 10px;">
+            <button class="btn btn-link"><clr-icon shape="download"></clr-icon> Download</button>
+            <button class="btn btn-link"><clr-icon shape="printer"></clr-icon> Print</button>
+        </h4>
+    </div>
+</div>
+
+<div style="max-height: 200px; overflow-y: scroll; margin: 20px 0px;">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam rhoncus nisl eget bibendum imperdiet. Duis ut augue at lorem molestie iaculis. Donec cursus sapien vel lectus mattis tincidunt. Ut porttitor, leo in laoreet luctus, ante turpis lacinia quam, eu ornare purus felis at ex. In libero orci, euismod ac tellus ullamcorper, venenatis efficitur ex. Morbi id mauris imperdiet, varius nisi at, condimentum ipsum. Ut id blandit ipsum, in egestas nunc. Fusce condimentum enim risus, non malesuada massa blandit non. Aliquam purus erat, lobortis sed luctus eget, tempus in sapien. Mauris viverra vel erat ut varius. Nam sed laoreet ligula, at dictum nulla. </p>
+    <p class="p2">Bulleted List</p>
+    <ul style="margin-top: 0.5rem;">
+        <li>Bullet #1</li>
+        <li>Bullet #2</li>
+        <li>Bullet #3</li>
+        <li>Bullet #4</li>
+    </ul>
+    <p><button type="button" id="bRun" class="btn btn-primary" disabled><span style="position: relative; top: 5px;" class="spinner spinner-sm"></span></button></p>
+</div>
+
+<!--
+~ Copyright (c) 2016-2020 VMware, Inc. All Rights Reserved.
+~ This software is released under MIT license.
+~ The full license information can be found in LICENSE in the root directory of this project.
+-->
+
+<hr />
+
+<div class="clr-row">
+    <div class="clr-col-9">
+        <h4>Upload File Examples</h4>
+
+        <p style="margin-top: 0.5rem;">Upload File examples provided by <i>Clarity Design</i> GitHub page.</p>
+    </div>
+    <div class="clr-col-3"></div>
+</div>
+
+
+<form class="clr-form">
+    <div class="clr-form-control">
+        <label class="clr-control-label">Basic</label>
+        <div class="clr-control-container">
+        <div class="clr-file-wrapper">
+            <label for="basic" class="clr-control-label"><span class="btn btn-sm">browse</span></label>
+            <input type="file" id="basic" placeholder="Enter value here" class="clr-file" />
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+
+    <div class="clr-form-control">
+        <label for="basic-default" class="clr-control-label">Basic default</label>
+        <div class="clr-control-container">
+        <div class="clr-file-wrapper">
+            <input type="file" id="basic-default" placeholder="Enter value here" />
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+
+    <div class="clr-form-control">
+        <label class="clr-control-label">Error</label>
+        <div class="clr-control-container clr-error">
+        <div class="clr-file-wrapper">
+            <label for="error" class="clr-control-label"><span class="btn btn-sm">browse</span></label>
+            <input type="file" id="error" placeholder="Enter value here" class="clr-file" />
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+
+    <div class="clr-form-control">
+        <label for="error-default" class="clr-control-label">Error default</label>
+        <div class="clr-control-container clr-error">
+        <div class="clr-file-wrapper">
+            <input type="file" id="error-default" placeholder="Enter value here" />
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+
+    <div class="clr-form-control clr-form-control-disabled">
+        <label class="clr-control-label">Disabled</label>
+        <div class="clr-control-container clr-error">
+        <div class="clr-file-wrapper">
+            <label for="disabled" class="clr-control-label"><span class="btn btn-sm">browse</span></label>
+            <input type="file" id="disaled" disabled placeholder="Enter value here" class="clr-file" />
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+
+    <div class="clr-form-control clr-form-control-disabled">
+        <label for="disabled-default" class="clr-control-label">Disabled default</label>
+        <div class="clr-control-container clr-error">
+        <div class="clr-file-wrapper">
+            <input type="file" id="disabled-default" disabled placeholder="Enter value here" />
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+
+    <style>
+        .button-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
+
+    <label class="btn btn-link">
+        <input type="file"
+            (change)="onChange($event)"
+            placeholder="Upload file"
+            class="button-input"
+            accept="*">
+        Attach Files
+    </label>
+
+    <div class="clr-form-control">
+        <label class="clr-control-label">Basic</label>
+        <div class="clr-control-container">
+        <div class="clr-file-wrapper">
+            <label class="btn btn-link">
+                <input type="file"
+                    (change)="onChange($event)"
+                    placeholder="Upload file"
+                    class="button-input"
+                    accept="*">
+                Attach Files
+            </label>
+        </div>
+        <!-- IMPORTANT DIFFERENCE IN STRUCTURE! ICON IS NOT PART OF THE INPUT WRAPPER -->
+        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+        <span class="clr-subtext">Helper Text</span>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

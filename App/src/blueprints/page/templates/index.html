@@ -2,81 +2,171 @@
 {% block content_title %}WinRM Demo{% endblock %}
 
 {% block content %}
-    <h4>Connection Specs</h4>
-    <p style="margin-top: 0;">This demo utilizes the NTLM authentication model to communicate with the remote Windows Server.</p>
 
-    <div class="clr-row">
-        <div class="clr-col-4">
-            <!-- CONNECTION INPUTS: SOURCE -->
-            <div class="clr-form-control">
-                <span class="clr-control-label">Windows Server</span>
-                <div class="clr-control-container">
-                    <div class="clr-input-wrapper">
-                        <input type="text" class="clr-input" id="tServer" placeholder="Server IP / FQDN" style="width: 400px;"/>
-                    </div>
+<style>
+    hr {
+        border: 1px solid hsl(198, 0%, 91%);
+    }
+</style>
+
+<p>This demo utilizes WinRM to communicate with a remote Windows Server. The traffic is encrpyted and protected using NTLM transport.</p>
+
+<h4>Connection Settings</h4>
+<p style="margin: 0;">Define Connection Setting for WinRM</p>
+
+<!-- CONNECTION SETTINGS -->
+<div class="clr-row">
+    <div class="clr-col-4">
+        <!-- CONNECTION INPUTS: SOURCE -->
+        <div class="clr-form-control">
+            <span class="clr-control-label">Windows Server</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="text" class="clr-input" id="tServer" placeholder="Server IP / FQDN" style="width: 400px;"/>
                 </div>
-                <!-- HELPER TEXT -->
-                <span class="clr-subtext">IP Address or FQDN of Windows Server</span>
             </div>
+            <!-- HELPER TEXT -->
+            <span class="clr-subtext">IP Address or FQDN of Windows Server</span>
         </div>
-        <div class="clr-col-4">
-            <!-- CONNECTION INPUTS: USERNAME -->
-            <div class="clr-form-control">
-                <span class="clr-control-label">Username</span>
-                <div class="clr-control-container">
-                    <div class="clr-input-wrapper">
-                        <input type="text" class="clr-input" id="tUser" placeholder="Domain\Username" style="width: 400px;"/>
-                    </div>
+    </div>
+    <div class="clr-col-4">
+        <!-- CONNECTION INPUTS: USERNAME -->
+        <div class="clr-form-control">
+            <span class="clr-control-label">Username</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="text" class="clr-input" id="tUser" placeholder="Domain\Username" style="width: 400px;"/>
                 </div>
-                <!-- HELPER TEXT -->
-                <span class="clr-subtext">Windows Credentials</span>
             </div>
+            <!-- HELPER TEXT -->
+            <span class="clr-subtext">Windows Credentials</span>
         </div>
-        <div class="clr-col-4">
-            <!-- CONNECTION INPUTS: PASSWORD -->
-            <div class="clr-form-control">
-                <span class="clr-control-label">Password</span>
-                <div class="clr-control-container">
-                    <div class="clr-input-wrapper">
-                        <input type="password" class="clr-input" id="tPass" placeholder="Password" style="width: 400px;"/>
-                    </div>
+    </div>
+    <div class="clr-col-4">
+        <!-- CONNECTION INPUTS: PASSWORD -->
+        <div class="clr-form-control">
+            <span class="clr-control-label">Password</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="password" class="clr-input" id="tPass" placeholder="Password" style="width: 400px;"/>
                 </div>
-                <!-- HELPER TEXT -->
-                <span class="clr-subtext">Windows Password</span>
+            </div>
+            <!-- HELPER TEXT -->
+            <span class="clr-subtext">Windows Password</span>
+        </div>
+    </div>
+</div>
+
+<!-- POWERSHELL COMMAND -->
+<div class="clr-row">
+    <div class="clr-col-12">
+        <div class="clr-form-control">
+            <span class="clr-control-label">PowerShell Command</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="text" class="clr-input" id="tCmd" placeholder="PowerShell Command" value="$PSVersionTable | ConvertTo-Json" style="width: 800px;"/>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="clr-row">
-        <div class="clr-col-12">
-            <!-- CONNECTION INPUTS: SOURCE -->
-            <div class="clr-form-control">
-                <span class="clr-control-label">PowerShell Command</span>
-                <div class="clr-control-container">
-                    <div class="clr-input-wrapper">
-                        <input type="text" class="clr-input" id="tCmd" placeholder="PowerShell Command" value="$PSVersionTable | ConvertTo-Json" style="width: 800px;"/>
+<!-- CONNECT BUTTON -->
+<div class="clr-wizard-btn-wrapper" style="padding-top: 1rem;">
+    <button type="button" id="bRun" class="btn btn-primary" onclick="runPowershell()">Run</button>
+    <button type="button" class="btn btn-outline" onclick="clearResults()">Clear</button>
+</div>
+
+<!-- RESULTS & OUTPUT -->
+<h4>Results</h4>
+<p style="margin-top: 0px;">Responses from WinRM</p>
+
+<div class="clr-accordion" style="margin-top: 1rem;">
+    <div class="clr-accordion-panel">
+        <!-- POWERSHELL OUTPUT -->
+        <div role="group" class="clr-accordion-panel-open">
+            <!-- TITLE BAR -->
+            <div class="clr-accordion-header">
+                <button type="button" onclick="stepperClick(this);" class="clr-accordion-header-button">
+                    <span class="clr-sr-only"></span>
+                    <span class="clr-accordion-status">
+                        <clr-icon shape="angle" dir="right" class="clr-accordion-angle" role="none" />
+                    </span>
+                    <div class="clr-accordion-title">Powershell Response</div>
+                </button>
+            </div>
+
+            <!-- CONTENT -->
+            <div role="region" id="clr-accordion-content-clr-id-1-0'">
+                <div class="clr-accordion-content">
+                    <div class="clr-accordion-inner-content">
+                        <pre id="pOutput" style="min-height: 300px;"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARSED JSON -->
+        <div role="group" class="clr-accordion-panel" id="step1">
+            <!-- TITLE BAR -->
+            <div class="clr-accordion-header">
+                <button onclick="stepperClick(this);" type="button" class="clr-accordion-header-button">
+                    <span class="clr-sr-only"></span>
+                    <span class="clr-accordion-status">
+                        <clr-icon shape="angle" dir="right" class="clr-accordion-angle" role="none" />
+                    </span>
+                    <div class="clr-accordion-title">Parsed JSON Ouput</div>
+                </button>
+            </div>
+
+            <!-- CONTENT -->
+            <div role="region" id="clr-accordion-content-clr-id-1-0'">
+                <div class="clr-accordion-content">
+                    <div class="clr-accordion-inner-content">
+                        <pre style="min-height: 400px;" id="pJson"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ERRORS -->
+        <div role="group" class="clr-accordion-panel" id="step1">
+            <!-- TITLE BAR -->
+            <div class="clr-accordion-header">
+                <button onclick="stepperClick(this);" type="button" class="clr-accordion-header-button" id="clr-accordion-header-clr-id-2-0">
+                    <span class="clr-sr-only"></span>
+                    <span class="clr-accordion-status">
+                        <clr-icon shape="angle" dir="right" class="clr-accordion-angle" role="none" />
+                    </span>
+                    <div class="clr-accordion-title">Error Messages</div>
+                </button>
+            </div>
+
+            <!-- CONTENT -->
+            <div role="region" id="clr-accordion-content-clr-id-1-0'">
+                <div class="clr-accordion-content">
+                    <div class="clr-accordion-inner-content">
+                        <pre style="min-height: 200px;" id="pErrors"></pre>
                     </div>
                 </div>
             </div>
         </div>
     </div>
- 
-    <!-- CONNECT BUTTON -->
-    <div class="clr-wizard-btn-wrapper" style="padding-top: 30px;">
-        <button type="button" id="bRun" class="btn btn-primary" onclick="runPowershell()">Run</button>
-        <button type="button" class="btn btn-outline" onclick="clearResults()">Clear</button>
-    </div>
+</div>
 
-    <!-- RESULTS -->
-    <p>Results</p>
-    <pre style="min-height: 200px;" id="pResults"></pre>
 {% endblock %}
 
 {% block scripts %}
     <script>
         // FUNCTION: AJAX CALL TO UPDATE DEPLOYMENT STATUS
         function runPowershell(){
-            // GET FORM DATA
+            
+            // UPDATE RUN BUTTON
+            var bRun = document.getElementById('bRun');
+            bRun.disabled = true;
+            bRun.innerHTML = '<span style="position: relative; top: 5px;" class="spinner spinner-sm"></span>'
+
+            // GET FORM ITEMS
             var SERVER = document.getElementById('tServer').value;
             var USERNAME = document.getElementById('tUser').value;
             var PASSWORD = document.getElementById('tPass').value;
@@ -96,22 +186,53 @@
                 })
             })
             .then((response) => {
-                if (response.status !== 200){
-                    console.log('[ERROR] Error Connecting to API Endpoint');
-                    pResults.innerHTML = '[ERROR] Error Connecting to API Endpoint';
-                    return ;
-                }
+                    // UPDATE RUN BUTTON
+                    bRun.disabled = false;
+                    bRun.innerHTML = 'Run'
+                    
+                    // ERROR HANDLE
+                    if (response.status !== 200){
+                        document.getElementById('pOutput').innerHTML = '[ERROR] Error Connecting to WinRM API Endpoint';
+                        document.getElementById('pErrors').innerHTML = '[ERROR] Error Connecting to WinRM API Endpoint';
+                        return ;
+                    }
 
-                response.json().then((data) => {
-                    // UPDATE RESULTS
-                    document.getElementById('pResults').innerHTML = JSON.stringify(data.results, null, 2);              
+                    // RESULTS
+                    response.json().then((data) => {
+                        // UPDATE RESULTS
+                        if (data.json != undefined){
+                            document.getElementById('pJson').innerHTML = JSON.stringify(data.json, null, 2);
+                        } else {
+                            document.getElementById('pJson').innerHTML = '';
+                        }
+                        document.getElementById('pOutput').innerHTML = data.response;  
+                        document.getElementById('pErrors').innerHTML = data.errors;
+                    })
                 })
-            })
+            
         }
     
         // FUNCTION: CLEAR RESULTS
         function clearResults(){
-            document.getElementById('pResults').innerHTML = '';
+            document.getElementById('pOutput').innerHTML = '';
+            document.getElementById('pJson').innerHTML = '';
+            document.getElementById('pErrors').innerHTML = '';
+            document.getElementById('oFile').value = '';
+            document.getElementById('sFile').innerHTML = '';
+        }
+
+        // FUNCTION: UPDATE UPLOAD LABEL
+        function updateFilename(selected){
+            document.getElementById('sFile').innerHTML = selected.files[0].name;
+        }
+            
+        // FUNCTION: OPEN ACCORDIAN
+        function stepperClick(me){
+            if (me.parentNode.parentNode.className == 'clr-accordion-panel'){
+                me.parentNode.parentNode.className = 'clr-accordion-panel-open';
+            } else {
+                me.parentNode.parentNode.className = 'clr-accordion-panel';
+            }
         }
     </script>
 {% endblock %}

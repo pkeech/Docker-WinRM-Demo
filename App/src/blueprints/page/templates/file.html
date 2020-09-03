@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block content_title %}WinRM Demo{% endblock %}
+
+{% block content %}
+
+<style>
+    hr {
+        border: 1px solid hsl(198, 0%, 91%);
+    }
+</style>
+
+<p>This demo utilizes WinRM to communicate with a remote Windows Server. The traffic is encrpyted and protected using NTLM transport.</p>
+
+<h4 style="margin-top: 1rem;">Connection Settings</h4>
+<p style="margin: 0;">Define Connection Setting for WinRM</p>
+
+<!-- CONNECTION SETTINGS -->
+<div class="clr-row">
+    <div class="clr-col-4">
+        <!-- CONNECTION INPUTS: SOURCE -->
+        <div class="clr-form-control">
+            <span class="clr-control-label">Windows Server</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="text" class="clr-input" id="tServer" placeholder="Server IP / FQDN" style="width: 400px;"/>
+                </div>
+            </div>
+            <!-- HELPER TEXT -->
+            <span class="clr-subtext">IP Address or FQDN of Windows Server</span>
+        </div>
+    </div>
+    <div class="clr-col-4">
+        <!-- CONNECTION INPUTS: USERNAME -->
+        <div class="clr-form-control">
+            <span class="clr-control-label">Username</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="text" class="clr-input" id="tUser" placeholder="Domain\Username" style="width: 400px;"/>
+                </div>
+            </div>
+            <!-- HELPER TEXT -->
+            <span class="clr-subtext">Windows Credentials</span>
+        </div>
+    </div>
+    <div class="clr-col-4">
+        <!-- CONNECTION INPUTS: PASSWORD -->
+        <div class="clr-form-control">
+            <span class="clr-control-label">Password</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="password" class="clr-input" id="tPass" placeholder="Password" style="width: 400px;"/>
+                </div>
+            </div>
+            <!-- HELPER TEXT -->
+            <span class="clr-subtext">Windows Password</span>
+        </div>
+    </div>
+</div>
+
+<!-- FILE PATH -->
+<div class="clr-row">
+    <div class="clr-col-12">
+        <div class="clr-form-control">
+            <span class="clr-control-label">Remote File Location</span>
+            <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                    <input type="text" class="clr-input" id="tPath" placeholder="Path to File (C:\Users\Username\Desktop\myfile.txt)" style="width: 800px;"/>
+                </div>
+                <!-- HELPER TEXT -->
+                <span class="clr-subtext">Absolute or Relative path on the remote server</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FILE -->
+<div class="clr-row" style="margin-bottom: 1rem;">
+    <div class="clr-col-12">
+        <div class="clr-form-control">
+            <label for="basic" class="clr-control-label">File Upload</label>
+            <div class="clr-control-container">
+                <div class="clr-file-wrapper">                     
+                    <label for="oFile" class="clr-control-label"><span class="btn btn-primary-outline btn-sm">Browse ...</span><span id="sFile" class="p7" style="margin-left: 1rem; font-style: italic;"></span></label>
+                    <input type="file" id="oFile" placeholder="Enter value here" class="clr-file" onchange="updateFilename(this);" accept="application/JSON"/>    
+                </div>
+                <span class="clr-subtext">Upload Valid File</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONNECT BUTTON -->
+<button type="button" id="bUpload" class="btn btn-primary" onclick="uploadFile()"><clr-icon shape="upload"></clr-icon> Upload</span></button>
+<button type="button" id="bDowanlod" class="btn btn-primary" onclick="" disabled><clr-icon shape="download"></clr-icon> Download</span></button>
+
+
+<!-- RESULTS & OUTPUT -->
+<h4>Results</h4>
+<p style="margin: 0px;">PowerShell Output</p>
+<p><strong>Status: </strong><span id="lStatus"></span></p>
+<pre style="min-height: 300px; margin-top: 1rem;" id="pOutput"></pre>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // FUNCTION: AJAX CALL TO UPDATE DEPLOYMENT STATUS
+        function uploadFile(){
+            
+            // UPDATE RUN BUTTON
+            var bUpload = document.getElementById('bUpload');
+            bUpload.disabled = true;
+            bUpload.innerHTML = '<span style="position: relative; top: 5px;" class="spinner spinner-sm"></span>'
+
+            // GET FORM ITEMS
+            var SERVER = document.getElementById('tServer').value;
+            var USERNAME = document.getElementById('tUser').value;
+            var PASSWORD = document.getElementById('tPass').value;
+            var PATH = document.getElementById('tPath').value;
+            var FILE = document.getElementById('oFile').files[0];
+
+            // VALIDATION
+
+
+            // READ FILE
+            var reader = new FileReader();
+            reader.readAsText(FILE, "UTF-8");
+
+            reader.onload = function (evt) {
+                // READ & ENCODE
+                rawFile = evt.target.result;
+                encodedFile = btoa(rawFile);
+
+                // API CALL                                
+                fetch("/api/v1/powershell/upload", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        server: SERVER, 
+                        username: USERNAME,
+                        password: PASSWORD,
+                        path: PATH,
+                        file: encodedFile
+                    })
+                })
+                .then((response) => {
+                    // UPDATE RUN BUTTON
+                    bUpload.disabled = false;
+                    bUpload.innerHTML = '<clr-icon shape="upload"></clr-icon> Upload</span>'
+                    
+                    // ERROR HANDLE
+                    if (response.status !== 200){
+                        console.log('[ERROR] Error Connecting to API Endpoint');
+                        document.getElementById('pOutput').innerHTML = '[ERROR] Error Connecting to WinRM API Endpoint';                            
+                        return ;
+                    }
+
+                    // UPDATES RESULTS
+                    response.json().then((data) => {
+                        document.getElementById('pOutput').innerHTML = data.logs;  
+                        document.getElementById('lStatus').innerHTML = data.status;  
+                    })
+                })
+            }
+
+            // ERROR HANDLE
+            reader.onerror = function (evt) {
+                    console.log("error reading file");
+                }
+
+        }
+    
+        // FUNCTION: CLEAR RESULTS
+        function clearResults(){
+            document.getElementById('pOutput').innerHTML = '';
+            document.getElementById('pJson').innerHTML = '';
+            document.getElementById('pErrors').innerHTML = '';
+            document.getElementById('oFile').value = '';
+            document.getElementById('sFile').innerHTML = '';
+        }
+
+        // FUNCTION: UPDATE UPLOAD LABEL
+        function updateFilename(selected){
+            document.getElementById('sFile').innerHTML = selected.files[0].name;
+        }
+    </script>
+{% endblock %}
