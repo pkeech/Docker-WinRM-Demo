@@ -31,15 +31,23 @@ jobs:
       - name: Build an image from Dockerfile
         run: docker build -t pkeech/winrm-demo:${{ steps.current_version.outputs.value }} ./App/
 
-      ## STEP 3: Login to Docker Hub
+      ## STEP 3: Create Latest Tag
+      - name: Create Latest Tag
+        run: docker tag pkeech/winrm-demo:${{ steps.current_version.outputs.value }} pkeech/winrm-demo:latest
+
+      ## STEP 4: Login to Docker Hub
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
 
-      ## STEP 4: Publish to Docker Hub
+      ## STEP 5: Publish to Docker Hub (Version)
       - name: Publish Build to Docker Hub
         run: docker push pkeech/winrm-demo:${{ steps.current_version.outputs.value }}
 
-      ## STEP 5: Create GitHub Release
+      ## STEP 6: Publish to Docker Hub (Latest)
+      - name: Publish Build to Docker Hub
+        run: docker push pkeech/winrm-demo:latest
+
+      ## STEP 7: Create GitHub Release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
