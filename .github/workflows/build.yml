@@ -1,16 +1,16 @@
 ## Define GitHub Action Workflow Name
-name: Deployment
+name: Build
 
-## When Push to Master is Created
+## When Pull Request to Master is Created
 on:
-  push:
-    branches:
+  pull_request:
+    branches: 
       - master
   workflow_dispatch:
 
 jobs:
   ## Define Workflow Steps
-  deploy:
+  build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -19,44 +19,43 @@ jobs:
       ## STEP 0: Checkout Source
       - uses: actions/checkout@v2
               
-      ## STEP 1: Get Build Version
+      ## STEP 1: Determine Release Version
       - name: Read current version
         id: current_version
         uses: christian-draeger/read-properties@1.0.0
         with:
           path: 'VERSION'
           property: 'version'
-
-      ## STEP 2: Build Docker Image
-      - name: Build an image from Dockerfile
-        run: docker build -t pkeech/winrm-demo:${{ steps.current_version.outputs.value }} ./App/
-
-      ## STEP 3: Login to Docker Hub
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
-
-      ## STEP 4: Publish to Docker Hub
-      - name: Publish Build to Docker Hub
-        run: docker push pkeech/winrm-demo:${{ steps.current_version.outputs.value }}
-
-      ## STEP 5: Create GitHub Release
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+                    
+      ## STEP 2: Generate New Version Number      
+      - name: Bump release version
+        id: new_version
+        uses: christian-draeger/increment-semantic-version@1.0.0
         with:
-          tag_name: ${{ steps.current_version.outputs.value }}
-          release_name: Version ${{ steps.current_version.outputs.value }}
-          body: |
-            "# TODO: Update Me
-            GitHub Actions Pipeline.
-            Release Version: ${{ steps.current_version.outputs.value }}"
-          draft: false
-          prerelease: true
-          
-      
-          
+          current-version: ${{ steps.current_version.outputs.value }}
+          version-fragment: 'bug'
+            
+      ## STEP 3: Update VERSION File (Remove)
+      - name: Remove Current Version
+        uses: JesseTG/rm@v1.0.0
+        with:
+          path: 'VERSION'
+
+      ## STEP 4: Update VERSION File (Add)
+      - name: Save New Version
+        uses: christian-draeger/write-properties@1.0.0
+        with:
+          path: 'VERSION'
+          property: 'version'
+          value: ${{ steps.new_version.outputs.next-version }}
+                      
+      ## STEP 5: Update VERSION File (Commit)
+      - name: Commit Version Change
+        uses: matheusalbino/git-commit@v1.0.1
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            message: 'Updated version to ${{ steps.new_version.outputs.next-version }}'
+
           
           
 
