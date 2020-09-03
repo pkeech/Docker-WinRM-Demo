@@ -1,21 +1,16 @@
 ## Define GitHub Action Workflow Name
 name: Deployment
 
-## Trigger When Pull Request Occurs to 'Master' Branch or Manually Started
+## When Pull Request to Master is Created
 on:
-  push:
-    branches:
+  pull_request:
+    branches: 
       - master
-    paths-ignore:
-      - '.github/**'
-      - 'README.md'
-      - 'VERSION'
-  ## Allow Manual Runs
   workflow_dispatch:
 
 jobs:
   ## Define Workflow Steps
-  build:
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 

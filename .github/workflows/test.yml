@@ -1,0 +1,90 @@
+## Define GitHub Action Workflow Name
+name: Test
+
+## Trigger When Pull Request Occurs to 'Development' Branch or Manually Started
+on:
+  push:
+    branches:
+      - development
+    paths-ignore:
+      #- '.github/**'
+      - 'README.md'
+      - 'VERSION'
+  workflow_dispatch:
+
+jobs:
+  ## Define Workflow Steps
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      ## STEP 0: Checkout Source
+      - uses: actions/checkout@v2
+              
+      ## STEP 1: Build Docker Image
+      - name: Build an image from Dockerfile
+        run: docker build -t docker.io/pkeech/WinRM-Demo:${{ github.sha }} .
+
+      ## STEP 2: Scan Docker Image (Trivy) & Create Issues
+      - name: Trivy Scan
+        uses: homoluctus/gitrivy@v2
+        with:
+          # The target image name of vulnerability scan (specify this parameter or "IMAGE_NAME" environment variable
+          image: docker.io/pkeech/WinRM-Demo:${{ github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue_label: "Issue: Trivy"
+
+      ## STEP 3: Perform Code Coverage (CodeCov)
+#      - name: CodeCov
+#        uses: codecov/codecov-action@v1.0.13
+#        with:          
+#          token: ${{ secrets.CODECOV_TOKEN }}
+
+          
+
+## Define GitHub Action Workflow Name
+#name: Testing
+
+## When Pull Request to Master is Created
+#on:
+#  pull_request:
+#    branches: 
+#      - master
+#  workflow_dispatch:
+
+## Define Workflow
+#jobs:
+#  test_pull_request:
+#    runs-on: ubuntu-latest
+
+#    steps:
+      ## STEP 0: Checkout Source
+#      - uses: actions/checkout@v2 
+      
+      ## STEP 1: Build Docker 'Test' Image
+      #- name: Build and push Docker images
+      #  uses: docker/build-push-action@v1
+      #  with:
+      #    username: ${{ secrets.DOCKER_USERNAME }}
+      #    password: ${{ secrets.DOCKER_TOKEN }}
+      #    repository: pkeech/WinRM-Demo
+      #    tags: dev
+
+      ## STEP 1: Perform Code Coverage (CodeCov)
+#      - name: CodeCov
+#        uses: codecov/codecov-action@v1.0.13
+#        with:          
+#          token: ${{ secrets.CODECOV_TOKEN }}
+      
+      ## STEP 2: Test Image Depenedencies (Trivy)
+      #- name: Trivy
+        
+             
+      ## STEP 3: SLACK Notification
+#      - name: Slack Notification
+#        uses: rtCamp/action-slack-notify@v2.0.0
+#        env:
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#          SLACK_MESSAGE: 'Docker-WinRM-Demo has successfully been tested.' 
