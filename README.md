@@ -1,8 +1,11 @@
 # Docker + WinRM Demo
 
-![Deployment](https://github.com/pkeech/Docker-WinRM-Demo/workflows/Deployment/badge.svg)
+![Test](https://github.com/pkeech/Docker-WinRM-Demo/workflows/Test/badge.svg)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/pkeech/Docker-WinRM-Demo?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/pkeech/Docker-WinRM-Demo)
+
+<!-- ![Build](https://github.com/pkeech/Docker-WinRM-Demo/workflows/Build/badge.svg)
+![Deploy](https://github.com/pkeech/Docker-WinRM-Demo/workflows/Deployment/badge.svg) -->
 
 ## Description
 

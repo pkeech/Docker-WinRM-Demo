@@ -3,6 +3,11 @@ version: "3.7"
 
 ## DEFINE SERVICES
 services:
+  ## NGINX (WEB SERVER) - THIS DISABLES NGINX
+  nginx:
+    image: alpine:latest
+    command: "true"
+    entrypoint: "true"
 
   ## DEMO
   demo:
@@ -11,9 +16,7 @@ services:
       target: Development
     image: pkeech/winrm-demo:dev
     container_name: WINRM_DEMO
+    ports:
+      - 8080:8080
     volumes:
       - ./App:/app
-    environment: 
-      UTIL_SVR: "192.168.2.80"
-      SVC_ACT: "administrator@dodbrit.com"
-      SVC_PWD: "1qaz2wsx!QAZ@WSX"

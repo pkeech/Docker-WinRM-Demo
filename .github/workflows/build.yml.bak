@@ -1,16 +1,11 @@
 ## Define GitHub Action Workflow Name
-name: Deployment
+name: Build
 
-## Trigger When Pull Request Occurs to 'Master' Branch or Manually Started
+## When Pull Request to Master is Created
 on:
-  push:
-    branches:
+  pull_request:
+    branches: 
       - master
-    paths-ignore:
-      - '.github/**'
-      - 'README.md'
-      - 'VERSION'
-  ## Allow Manual Runs
   workflow_dispatch:
 
 jobs:
@@ -39,66 +34,28 @@ jobs:
         with:
           current-version: ${{ steps.current_version.outputs.value }}
           version-fragment: 'bug'
-      
-      ## STEP 2b: Output Version Information
-      - name: Version Information
-        run: |
-          echo "Current Version: ${{ steps.current_version.outputs.value }}"
-          echo "New Version: ${{ steps.new_version.outputs.next-version }}"
-      
-      ## STEP 3: Update VERSION File
+            
+      ## STEP 3: Update VERSION File (Remove)
       - name: Remove Current Version
         uses: JesseTG/rm@v1.0.0
         with:
           path: 'VERSION'
-          
+
+      ## STEP 4: Update VERSION File (Add)
       - name: Save New Version
         uses: christian-draeger/write-properties@1.0.0
         with:
           path: 'VERSION'
           property: 'version'
           value: ${{ steps.new_version.outputs.next-version }}
-            
-      ## STEP 4: Create GitHub Release
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ steps.new_version.outputs.next-version }}
-          release_name: Version ${{ steps.new_version.outputs.next-version }}
-          body: |
-            "GitHub Actions Pipeline.
-            Release Version: ${{ steps.new_version.outputs.next-version }}"
-          draft: false
-          prerelease: true
-          
-      ## STEP 5: Update VERSION
+                      
+      ## STEP 5: Update VERSION File (Commit)
       - name: Commit Version Change
         uses: matheusalbino/git-commit@v1.0.1
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             message: 'Updated version to ${{ steps.new_version.outputs.next-version }}'
-      
-      ## STEP 6: Build & Publish Docker Image     
-      #- name: Build & Publish to Docker Hub 
-      #  uses: elgohr/Publish-Docker-Github-Action@master
-      #  with:
-      #    name: pkeech/WinRM-Demo
-      #    username: ${{ secrets.DOCKER_USERNAME }}
-      #    password: ${{ secrets.DOCKER_TOKEN }}
-      #    dockerfile: ./Dockerfile
-          #context: ./WorkflowEngine/
-      #    tags: ${{ steps.new_version.outputs.next-version }}
-               
-      ## STEP 8: SLACK Notification
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2.0.0
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: 'A new version of Docker-WinRM-Demo (${{ steps.new_version.outputs.next-version }}) was release and published to Docker Hub' 
-          
+
           
           
 

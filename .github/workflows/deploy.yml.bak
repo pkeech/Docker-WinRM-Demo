@@ -1,0 +1,114 @@
+## Define GitHub Action Workflow Name
+name: Deployment
+
+## When Push to Master is Created
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  ## Define Workflow Steps
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      ## STEP 0: Checkout Source
+      - uses: actions/checkout@v2
+              
+      ## STEP 1: Get Build Version
+      - name: Read current version
+        id: current_version
+        uses: christian-draeger/read-properties@1.0.0
+        with:
+          path: 'VERSION'
+          property: 'version'
+
+      ## STEP 2: Build Docker Image
+      - name: Build an image from Dockerfile
+        run: docker build -t pkeech/winrm-demo:${{ steps.current_version.outputs.value }} ./App/
+
+      ## STEP 3: Create Latest Tag
+      - name: Create Latest Tag
+        run: docker tag pkeech/winrm-demo:${{ steps.current_version.outputs.value }} pkeech/winrm-demo:latest
+
+      ## STEP 4: Login to Docker Hub
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+
+      ## STEP 5: Publish to Docker Hub (Version)
+      - name: Publish Build to Docker Hub
+        run: docker push pkeech/winrm-demo:${{ steps.current_version.outputs.value }}
+
+      ## STEP 6: Publish to Docker Hub (Latest)
+      - name: Publish Build to Docker Hub
+        run: docker push pkeech/winrm-demo:latest
+
+      ## STEP 7: Create GitHub Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ steps.current_version.outputs.value }}
+          release_name: Version ${{ steps.current_version.outputs.value }}
+          body: |
+            "# TODO: Update Me
+            GitHub Actions Pipeline.
+            Release Version: ${{ steps.current_version.outputs.value }}"
+          draft: false
+          prerelease: true
+          
+      
+          
+          
+          
+
+## Define GitHub Action Workflow Name
+#name: Testing
+
+## When Pull Request to Master is Created
+#on:
+#  pull_request:
+#    branches: 
+#      - master
+#  workflow_dispatch:
+
+## Define Workflow
+#jobs:
+#  test_pull_request:
+#    runs-on: ubuntu-latest
+
+#    steps:
+      ## STEP 0: Checkout Source
+#      - uses: actions/checkout@v2 
+      
+      ## STEP 1: Build Docker 'Test' Image
+      #- name: Build and push Docker images
+      #  uses: docker/build-push-action@v1
+      #  with:
+      #    username: ${{ secrets.DOCKER_USERNAME }}
+      #    password: ${{ secrets.DOCKER_TOKEN }}
+      #    repository: pkeech/WinRM-Demo
+      #    tags: dev
+
+      ## STEP 1: Perform Code Coverage (CodeCov)
+#      - name: CodeCov
+#        uses: codecov/codecov-action@v1.0.13
+#        with:          
+#          token: ${{ secrets.CODECOV_TOKEN }}
+      
+      ## STEP 2: Test Image Depenedencies (Trivy)
+      #- name: Trivy
+        
+             
+      ## STEP 3: SLACK Notification
+#      - name: Slack Notification
+#        uses: rtCamp/action-slack-notify@v2.0.0
+#        env:
+#          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#          SLACK_MESSAGE: 'Docker-WinRM-Demo has successfully been tested.' 
