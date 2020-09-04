@@ -4,6 +4,15 @@ version: "3.7"
 ## DEFINE SERVICES
 services:
 
+  ## NGINX (WEB SERVER)
+  nginx:
+    build: 
+      context: ./Server
+      target: Production
+    image: pkeech/winrm-demo-server:latest
+    #ports:
+    #  - 8080:8080
+
   ## DEMO
   demo:
     build:
@@ -11,6 +20,5 @@ services:
       target: Production
     image: pkeech/winrm-demo:latest
     ports:
-      - 8080:8080
       - 5986:5986
       - 5985:5985
