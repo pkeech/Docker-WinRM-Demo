@@ -1,16 +1,11 @@
 ## Define GitHub Action Workflow Name
 name: Test
 
-## Trigger When Pull Request Occurs to 'Development' Branch or Manually Started
+## Trigger When Pull Request Occurs to 'Development' Branch
 on:
-  push:
-    branches:
+  pull_request:
+    branches: 
       - development
-    paths-ignore:
-      #- '.github/**'
-      - 'README.md'
-      - 'VERSION'
-  workflow_dispatch:
 
 jobs:
   ## Define Workflow Steps
@@ -34,7 +29,7 @@ jobs:
           # The target image name of vulnerability scan (specify this parameter or "IMAGE_NAME" environment variable
           image: docker.io/pkeech/winrm-demo:${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue_label: "Issue: Trivy"
+          
 
       ## STEP 3: Perform Code Coverage (CodeCov)
 #      - name: CodeCov
